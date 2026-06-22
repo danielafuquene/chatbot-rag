@@ -36,6 +36,9 @@ def run_chat_screen() -> None:
 def _fetch_and_store_reply(model: AppModel) -> None:
     with st.chat_message("assistant"):
         with st.spinner("Pensando..."):
-            texto_respuesta = fetch_assistant_reply(model.mensajes)
+            texto_respuesta = fetch_assistant_reply(
+                model.mensajes,
+                nombre_usuario=model.nombre_usuario,
+            )
     set_model(update(model, ReceiveMessage(texto_respuesta)))
     st.rerun()
