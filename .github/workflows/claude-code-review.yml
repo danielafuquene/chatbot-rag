@@ -1,0 +1,47 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  claude-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Actúa como revisor de código senior de este repositorio Python/Streamlit.
+
+            Revisa este pull request y deja feedback sobre:
+            - Calidad de código y buenas prácticas
+            - Arquitectura MVU (core / components / features)
+            - Posibles bugs o casos límite
+            - Seguridad (secretos, API keys, validación de inputs)
+            - Claridad y mantenibilidad
+
+            Usa CLAUDE.md como guía de convenciones del proyecto.
+            Responde en español. Sé constructivo y específico.
+
+            El branch del PR ya está en el working directory.
+            Usa `gh pr comment` para publicar el resumen del review en el PR.
+          claude_args: |
+            --max-turns 10
+            --model claude-sonnet-4-6
+            --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
