@@ -1,0 +1,91 @@
+ 1. Architectural patterns and system boundaries
+
+- Layered architecture, clean architecture, and hexagonal architecture: keep business rules independent of HTTP handlers, frameworks, and persistence through clear boundaries and ports/adapters.
+- Modular monoliths versus microservices: compare deployment independence, team ownership, operational complexity, network failures, and distributed transactions.
+- Domain-driven design fundamentals: bounded contexts, domain models, and choosing service boundaries around business capabilities rather than database tables.
+- Synchronous request/response versus event-driven workflows: choose based on latency, consistency, coupling, and failure recovery requirements.
+- Transactional outbox and sagas: reliable event publication alongside database writes, multi-step workflows, compensating actions, and the absence of a shared cross-service transaction.
+
+2. Performance measurement and profiling fundamentals
+
+- Start with a reproducible symptom and a baseline; distinguish slow startup, slow interactions, slow requests, and growing memory.
+- Latency versus throughput; averages versus p50/p95/p99; cold versus warm execution; cache hits versus misses.
+- CPU-bound versus I/O-bound work, saturation, queueing, and why adding concurrency can make a bottleneck worse.
+- Lab measurements versus real-user monitoring (RUM): controlled experiments help explain causes; field data captures actual devices, networks, and user journeys.
+- Memory profiling: heap snapshots, allocation timelines, retained objects, retaining paths, garbage collection, and stable memory plateaus versus persistent growth.
+
+3. React patterns for responsive rendering
+
+- Render, commit, and browser paint are different phases; use React profiling alongside browser traces to identify where time is spent.
+- State colocation: keep frequently changing state near its consumers; separate local UI state, URL state, shared client state, and server state.
+- Avoid duplicated derived state and effect-driven update chains; compute values during rendering when appropriate.
+- Composition and component boundaries: isolate expensive subtrees and prevent high-frequency updates from invalidating an entire page.
+- Context update fan-out: split unrelated contexts and consider selector-based subscriptions when many consumers need different slices.
+- Referential stability: understand when `React.memo`, `useMemo`, and `useCallback` help and when their comparison, retention, and maintenance costs outweigh the benefit. A stable callback alone does not stop a child from rendering.
+- React Compiler: understand its automatic memoization role, project compatibility requirements, and limitations; it does not replace profiling or fix inefficient algorithms.
+- Large collections: compare server-side pagination, infinite loading, and virtualization with tools such as TanStack Virtual or react-window; account for keyboard navigation, focus, and accessibility.
+- Input responsiveness: compare debouncing, throttling, `useDeferredValue`, and transitions. Deferred rendering does not debounce requests, and transitions do not move CPU work off the main thread.
+
+4. React and browser memory management
+
+- Effect lifecycle and cleanup: release timers, event listeners, observers, subscriptions, sockets, and other resources when their ownership ends.
+- Use `AbortController` where supported and ignore obsolete responses where needed; distinguish request races and temporary retention from a persistent memory leak.
+- Closures, detached DOM nodes, global registries, and unbounded caches can retain large object graphs.
+- Treat memoization and caching as memory tradeoffs, not free optimizations; define cache ownership, eviction, and appropriate lifetime.
+- Virtualization reduces mounted DOM, not necessarily the amount of data held in memory; combine it with bounded fetching and cache retention when needed.
+- Avoid retaining large files and binary data unnecessarily; revoke object URLs when no longer used and terminate workers when their work is complete.
+- Investigate repeated mount/unmount or navigation cycles with heap snapshot comparisons and retaining paths; do not identify a leak from one high memory reading.
+
+5. Modern single-page application tooling and delivery
+
+- Route-level and component-level code splitting with dynamic imports and `React.lazy`; use meaningful loading boundaries and account for chunk-loading errors after deployment.
+- Inspect bundle composition with tools such as rollup-plugin-visualizer or webpack-bundle-analyzer; identify duplicate dependencies, large imports, unused locales, and ineffective tree shaking.
+- Routing and data loading with tools such as React Router; avoid request waterfalls and unnecessary reloads, and handle navigation cancellation.
+- Server-state tools such as TanStack Query or Apollo Client: caching, deduplication, invalidation, optimistic updates, pagination, and garbage collection.
+- Compare client-rendered SPAs with static generation, SSR, and hybrid frameworks such as Next.js or React Router framework mode.
+- React Server Components, where supported, versus ordinary client components: understand execution boundaries, data access, and interactive client requirements.
+- Optimize image formats and dimensions, fonts, compression, and HTTP caching; preload or prefetch deliberately rather than loading everything early.
+
+6. Backend and database performance
+
+- Trace an endpoint across request parsing, authorization, application work, database calls, external services, and response serialization before optimizing.
+- Node.js event-loop behavior: synchronous CPU work blocks concurrent requests; inspect event-loop delay and utilization rather than assuming asynchronous syntax makes work non-blocking.
+- Use CPU and heap profiles, `node --cpu-prof`, `node --heap-prof`, `node:perf_hooks`, or an application profiler to test a specific bottleneck hypothesis.
+- Use worker threads for suitable CPU-heavy work and queues for durable background processing; distinguish these from scaling additional service instances.
+- Bounded concurrency, connection pools, backpressure, streaming, pagination, and payload limits; avoid loading or launching unlimited work at once.
+- Inspect ORM-generated SQL, N+1 queries, database plans, indexes, lock waits, and pool contention; use query-plan tools carefully because `EXPLAIN ANALYZE` executes the statement.
+- Prefer selecting needed fields, batching related reads, and appropriate pagination over retrieving an entire dataset to filter in application memory.
+
+7. Reliability and distributed workflow patterns
+
+- Timeouts, end-to-end deadlines, cancellation propagation, and retry budgets.
+- Retry only appropriate failures with bounded exponential backoff and jitter; avoid retry multiplication across service layers.
+- Idempotency keys, database uniqueness constraints, and transactional deduplication for repeated requests or messages.
+- At-least-once delivery, ordering limitations, poison messages, dead-letter queues (DLQs), and controlled redrive.
+- Circuit breakers, bulkheads, rate limiting, load shedding, and backpressure; understand their different responsibilities.
+- Event schemas, compatibility, correlation IDs, and tracing across asynchronous boundaries.
+
+8. Cloud deployment options and tradeoffs
+
+- Containers for long-running services; serverless functions for event-driven or request-scoped compute. Choose based on workload, not fashion.
+- Example AWS designs: S3 and CloudFront for static assets; ECS/Fargate for containers; API Gateway and Lambda for APIs; SQS/EventBridge for asynchronous communication.
+- Infrastructure as code with CDK, Terraform, or CloudFormation; review changes, isolate environments, manage state where applicable, and detect drift.
+- CI/CD: lint/type/test/build gates, immutable artifacts, environment configuration, secret handling, and short-lived deployment credentials through OIDC.
+- Deployment strategies: rolling, blue/green, and canary releases; feature flags, health signals, and explicit rollback criteria.
+
+### 9. Serverless architecture and optimization
+
+- Lambda lifecycle: initialization, invocation, execution-environment reuse, and cold starts; never assume in-memory state is durable or isolated per request.
+- Reduce initialization cost by measuring dependency loading, package size, and initialization work; reuse safe clients/connections while keeping request-specific data scoped.
+- Memory allocation also affects available CPU; tune memory and duration together with representative workloads, using tools such as AWS Lambda Power Tuning where appropriate.
+- Understand event-source-specific retries and failure handling; for SQS, study visibility timeout, batch size, partial batch failures, DLQs, and redrive.
+- Plan for execution time, payload, concurrency, and ephemeral-storage limits; use object storage references for large payloads and a different compute model when necessary.
+- Separate function timeouts, integration timeouts, and client deadlines; return a job identifier for long-running work rather than keeping a request open.
+
+### 10. Observability and continuous performance improvement
+
+- Logs, metrics, and distributed traces answer different questions; correlate them with request and trace identifiers.
+- Define service-level indicators and objectives around user journeys; alert on actionable symptoms and error-budget burn rather than every transient event.
+- Connect frontend navigation and API traces where practical; identify sampling gaps and avoid collecting sensitive request contents.
+- Monitor latency distributions, errors, saturation, queue age, event-loop delay, memory trends, and deployment markers.
+- Control telemetry cost and risk with sampling, retention, redaction, and bounded metric cardinality; avoid user IDs or request IDs as metric labels.
