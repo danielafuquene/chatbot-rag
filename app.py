@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Título de la app
-st.title("Mi primera app en Streamlit 🚀")
+st.title("Mi primera app en Streamlit")
 
 # Texto descriptivo
 st.write("Esta es una app simple para entender los componentes básicos.")

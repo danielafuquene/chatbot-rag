@@ -1,0 +1,105 @@
+# Full-Stack Engineer Interview Study Guide
+
+This guide is for a full-stack engineer working with JavaScript/TypeScript, backend APIs, databases, React, and potentially React Native. It is intentionally independent of a particular repository or framework version.
+
+## Study topics
+
+### JavaScript and TypeScript
+
+- Modern JavaScript: modules, scope, closures, promises, `async`/`await`, and array/object operations.
+- Modern JavaScript operators: optional chaining (`?.`), nullish coalescing (`??`), and logical assignment; understand short-circuit behavior and when a fallback should apply.
+- TypeScript primitive and special types: `string`, `number`, `boolean`, `null`, `undefined`, `any`, `unknown`, `never`, and `void`; understand why `any` weakens safety and how `unknown` requires narrowing.
+- Arrays and tuples: typed arrays, readonly arrays, fixed-length tuples, optional/rest tuple elements, and accessing tuple positions safely.
+- Interfaces and type aliases: structural typing, extending and composing types, interface declaration merging, and choosing the right form for the use case.
+- Enums and literal types: string/numeric enums, literal unions such as `'success' | 'error'`, and tradeoffs between enums and `as const` objects.
+- Type inference and assertions: inferred types, contextual typing, `as` assertions, `satisfies`, and why assertions do not perform runtime validation.
+- Functions and generics: typed parameters/returns, overloads, generic functions/interfaces/classes, and constraints such as `<T extends { length: number }>`
+- Union and intersection types: using `|` for alternatives and `&` to combine compatible object shapes.
+- Type narrowing and guards: `typeof`, `instanceof`, `in`, equality checks, user-defined type predicates (`value is Type`), and discriminated unions.
+- Utility types: `Partial`, `Required`, `Pick`, `Omit`, `Record`, `Readonly`, `ReturnType`, `Parameters`, and when custom mapped/conditional types are warranted.
+- DOM APIs: typing elements and events, safely narrowing nullable `querySelector` results, and handling the gap between compile-time DOM types and runtime markup.
+- TypeScript project configuration: strict mode, module/target settings, declaration files, and incremental migration in mixed JS/TS projects.
+- Runtime validation: why static types do not validate data received from an API or user input.
+- Error handling, immutability, and writing small, composable functions.
+- JavaScript data structures: arrays, objects, `Map`, `Set`, stacks, queues, trees, and graphs; choosing structures based on access patterns.
+- Complexity analysis: recognizing common time and space costs, including linear scans, sorting, and hash-based lookups.
+
+### Programming paradigms and functional programming
+
+- Imperative versus declarative programming; object-oriented, functional, and event-driven styles.
+- Choosing a paradigm or combining styles based on the problem rather than applying one pattern everywhere.
+- Functional programming concepts: pure functions, immutability, function composition, higher-order functions, and avoiding hidden side effects.
+- Applying `map`, `filter`, `reduce`, `find`, and related array methods clearly; knowing when a loop is easier to understand.
+- Keeping side effects at clear boundaries, such as API calls, storage, logging, and UI updates.
+
+### Libraries and ecosystem choices
+
+- Common utility libraries such as Lodash: useful operations, native alternatives, and when an extra dependency is justified.
+- Frontend libraries: React, routing, forms, accessibility utilities, and API clients such as Apollo Client or fetch-based clients.
+- Backend libraries: HTTP frameworks, validation libraries, logging, database clients, and ORMs such as Prisma or Sequelize.
+- Dependency evaluation: maintenance, security, bundle size, compatibility, licensing, API stability, and migration cost.
+- Prefer project conventions and well-maintained shared utilities over adding overlapping dependencies.
+- Know how to read library documentation, understand an API's edge cases, and write a small wrapper when it clarifies or constrains usage.
+
+### Tooling and legacy JavaScript ecosystems
+
+- Understand the roles of a linter, formatter, type checker, transpiler, bundler, and test runner; these tools solve different problems.
+- ESLint: rules, plugins, project configuration, and using lint feedback without blindly applying fixes.
+- Type systems in JavaScript projects: TypeScript and Flow annotations, gradual adoption, and the difference between static checks and runtime validation.
+- Babel and transpilation: syntax transformation, polyfills, and why legacy applications may need them.
+- CommonJS and ES modules: import/export patterns and interoperability considerations.
+- Working in legacy code: identify the conventions and toolchain first, make incremental changes, and avoid unrelated migrations.
+
+### Backend and APIs
+
+- HTTP methods, status codes, headers, and REST API design.
+- GraphQL schemas, queries, mutations, resolvers, and error handling.
+- Authentication versus authorization; validating identity and permissions at the server boundary.
+- Separation of transport handlers, business logic, and persistence.
+- Asynchronous work, queues, retries, timeouts, idempotency, and duplicate event handling.
+
+### Databases and ORMs
+
+- Relational modeling, relationships, constraints, and normalization.
+- SQL filtering, joins, indexes, transactions, and query-plan fundamentals.
+- Migrations and deploying backward-compatible schema changes.
+- ORM benefits and limitations; knowing when to inspect generated SQL or use a more direct query.
+- Pagination, N+1 queries, locking, and performance diagnosis.
+
+### Frontend and React
+
+- Components, props, state, composition, and hooks.
+- Rendering and effect behavior; avoiding unnecessary state and stale closures.
+- Form state, validation, loading/error/empty states, and user feedback.
+- Routing, protected views, API data fetching, caching, and invalidation.
+- Accessibility, responsive layouts, and safe rendering of user-provided content.
+
+### Architecture and cloud systems
+
+- Monolith, modular monolith, service, and microservice tradeoffs.
+- Service boundaries, shared libraries, and dependency direction.
+- Event-driven systems, queues, eventual consistency, and failure isolation.
+- Serverless concepts, configuration/secrets, deployment, observability, and cost.
+- Resilience patterns: timeouts, retries with backoff, idempotency, and graceful degradation.
+
+### Testing and delivery
+
+- Unit, integration, contract, and end-to-end testing; what each level can prove.
+- Test doubles, fixtures, deterministic tests, and avoiding brittle assertions.
+- Code review, readable changes, debugging, linting, formatting, type checks, and CI.
+- Logging and metrics that help diagnose failures without exposing sensitive data.
+
+### Version control and collaboration
+
+- Git fundamentals: commits, branches, remotes, merge, rebase, and resolving conflicts.
+- Writing focused, understandable commits and keeping changes reviewable.
+- Reviewing diffs, checking status, and avoiding accidental inclusion of generated files, secrets, or unrelated changes.
+- Pull request practices: explain intent, risk, testing, and migration/deployment considerations.
+- Safe collaboration: coordinate shared files and avoid rewriting shared history without agreement.
+
+### Security and privacy
+
+- Input validation, output encoding, injection vulnerabilities, and cross-site scripting.
+- Authentication, authorization, least privilege, and secret management.
+- Safe error responses and avoiding secrets or sensitive data in logs.
+- Dependency security and keeping libraries patched.

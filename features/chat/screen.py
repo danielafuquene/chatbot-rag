@@ -17,7 +17,7 @@ def run_chat_screen() -> None:
         set_model(update(model, sidebar_action))
         st.rerun()
 
-    st.title("🤖 Mi Chatbot con Claude")
+    st.title(" Mi Chatbot con Claude")
     render_chat_messages(model.mensajes)
 
     if needs_reply(model):
